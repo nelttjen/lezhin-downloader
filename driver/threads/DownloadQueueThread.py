@@ -40,9 +40,7 @@ class DownloadQueueThread(QThread):
             if downl_dir and not os.path.isdir(downl_dir):
                 os.mkdir(downl_dir)
             make_dir = downl_dir + '/' if downl_dir else ''
-            if os.path.isdir(make_dir + _dir):
-                shutil.rmtree(make_dir + _dir)
-            os.mkdir(make_dir + _dir)
+            os.mkdir(make_dir + _dir) if not os.path.isdir(make_dir + _dir) else None
             full_download_dir = make_dir + _dir
         except:
             logging.error('Не скачалось')
@@ -51,7 +49,7 @@ class DownloadQueueThread(QThread):
         for download_item in self.download_content.get('content'):
             curr_link = link + "/" + str(download_item.get('id'))
             self.driver.get(curr_link)
-            QThread.msleep(1000)
+            QThread.msleep(5000)
             items = [item for item in self.driver.find_elements(By.CSS_SELECTOR, '.viewer-list > div.cut') if
                      'cutLicense' not in item.get_attribute('class')]
             total = len(items)
@@ -71,6 +69,8 @@ class DownloadQueueThread(QThread):
             img_url = img_url1 + '/{}.webp' + img_url2
 
             save_to = full_download_dir + '/' + str(download_item.get('id'))
+            if os.path.isdir(save_to):
+                shutil.rmtree(save_to)
             os.mkdir(save_to)
 
             for i in range(1, total):
