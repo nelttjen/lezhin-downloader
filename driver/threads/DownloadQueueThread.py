@@ -49,7 +49,7 @@ class DownloadQueueThread(QThread):
         for download_item in self.download_content.get('content'):
             curr_link = link + "/" + str(download_item.get('id'))
             self.driver.get(curr_link)
-            QThread.msleep(5000)
+            QThread.msleep(settings.get('load_page_delay', 5000))
             items = [item for item in self.driver.find_elements(By.CSS_SELECTOR, '.viewer-list > div.cut') if
                      'cutLicense' not in item.get_attribute('class')]
             total = len(items)
@@ -84,7 +84,7 @@ class DownloadQueueThread(QThread):
                 thread.started.connect(worker.run)
                 thread.start()
                 self.threads.append((thread, worker))
-            QThread.msleep(5000)
+            QThread.msleep(settings.get('switch_page_delay', 5000))
         self.done.emit(True)
 
     def val_signal_answer(self, val):

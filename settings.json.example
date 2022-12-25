@@ -2,5 +2,7 @@
   "username": "",
   "password": "",
   "driver_path": "data/chromedriver.exe",
-  "save_path": "downloads/"
+  "save_path": "downloads/",
+  "load_page_delay": 7500,
+  "switch_page_delay": 5000
 }
