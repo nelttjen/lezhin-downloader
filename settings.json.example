@@ -1,5 +1,6 @@
 {
   "username": "",
   "password": "",
-  "driver_path": "data/chromedriver.exe"
+  "driver_path": "data/chromedriver.exe",
+  "save_path": "downloads/"
 }

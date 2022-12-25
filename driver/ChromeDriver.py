@@ -6,6 +6,10 @@ from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 
 from .threads.LoginThread import LoginThread
+from .threads.ChapterThread import ChapterThread
+from .threads.DownloadQueueThread import DownloadQueueThread
+from config import DEBUG
+from app.ui.MainWindowUI import MainWindowUI
 
 
 class ChromeDriver:
@@ -22,11 +26,27 @@ class ChromeDriver:
         self.driver.set_window_rect(0, 0, 500, 700)
 
     def login(self):
-        thread = QThread(self.parent)
         worker = LoginThread(self.parent, self.driver, self.username, self.password)
-        worker.moveToThread(thread)
-        thread.started.connect(worker.run)
+        worker.start()
+
+    def chapter_choose_create(self, bind_to, link):
+        thread = ChapterThread(bind_to, self.driver, link)
         thread.start()
 
-    def chapter_choose_create(self):
-        pass
+    def start_download(self, to_download, fake=None):
+        thread = DownloadQueueThread(self.parent, self.driver, to_download, fake=fake)
+        thread.val_signal.connect(self.val_answer)
+        thread.done.connect(self.done)
+        thread.start()
+
+    def val_answer(self, val):
+        if self.parent.download_bar.maximum() != val[1]:
+            self.parent.download_bar.setMaximum(val[1])
+            self.parent.download_bar.setValue(1)
+        else:
+            self.parent.download_bar.setValue(val[0])
+        self.parent.download_status_thread.setText(MainWindowUI.Meta.THREAD_DOWNLOAD_FORMAT.format(*val))
+
+    def done(self):
+        self.parent.download_bar.setValue(0)
+        self.parent.download_status_thread.setText('Загрузка завершена')

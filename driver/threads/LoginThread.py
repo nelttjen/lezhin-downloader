@@ -1,9 +1,9 @@
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QThread
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 
 
-class LoginThread(QObject):
+class LoginThread(QThread):
 
     def __init__(self, parent, driver: Chrome, username, password):
         super().__init__(parent)
