@@ -1,6 +1,7 @@
 import json
 import time
 
+from PyQt5.QtCore import QThread
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 
@@ -21,5 +22,11 @@ class ChromeDriver:
         self.driver.set_window_rect(0, 0, 500, 700)
 
     def login(self):
-        thread = LoginThread(self.parent, self.driver, self.username, self.password)
+        thread = QThread(self.parent)
+        worker = LoginThread(self.parent, self.driver, self.username, self.password)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
         thread.start()
+
+    def chapter_choose_create(self):
+        pass

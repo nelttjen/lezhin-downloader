@@ -18,4 +18,7 @@ class MainWindow(QMainWindow, MainWindowUI):
         self.setWindowTitle(MainWindowUI.Meta.WINDOW_TITLE)
 
     def login_done(self):
-        print('login done')
+        try:
+            show_info(self, 'Логин завершен')
+        except:
+            pass
